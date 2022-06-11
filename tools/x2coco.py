@@ -227,6 +227,8 @@ def voc_get_image_info(annotation_root, im_id):
 
 def voc_get_coco_annotation(obj, label2id):
     label = obj.findtext('name')
+    # if label.__eq__('references'):
+    #     print(label)
     assert label in label2id, "label is not in label2id."
     category_id = label2id[label]
     bndbox = obj.find('bndbox')
@@ -265,6 +267,7 @@ def voc_xmls_to_cocojson(annotation_paths, label2id, output_dir, output_file):
         img_info = voc_get_image_info(ann_root, im_id)
         output_json_dict['images'].append(img_info)
 
+        # print(img_info)
         for obj in ann_root.findall('object'):
             ann = voc_get_coco_annotation(obj=obj, label2id=label2id)
             ann.update({'image_id': im_id, 'id': bnd_id})
@@ -371,7 +374,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--dataset_type',
-        help='the type of dataset, can be `voc`, `widerface`, `labelme` or `cityscape`')
+        help='the type of dataset, can be `voc`, `widerface`, `labelme` or `cityscape`',
+        default='voc')
     parser.add_argument('--json_input_dir', help='input annotated directory')
     parser.add_argument('--image_input_dir', help='image directory')
     parser.add_argument(
@@ -395,21 +399,21 @@ def main():
         '--voc_anno_dir',
         help='In Voc format dataset, path to annotation files directory.',
         type=str,
-        default=None)
+        default='/Users/alpenwu/Documents/02_Code/OpenSource/PaddleDetection/dataset/article_regions/')
     parser.add_argument(
         '--voc_anno_list',
         help='In Voc format dataset, path to annotation files ids list.',
         type=str,
-        default=None)
+        default='/Users/alpenwu/Documents/02_Code/OpenSource/PaddleDetection/dataset/article_regions/valid.txt')
     parser.add_argument(
         '--voc_label_list',
         help='In Voc format dataset, path to label list. The content of each line is a category.',
         type=str,
-        default=None)
+        default='/Users/alpenwu/Documents/02_Code/OpenSource/PaddleDetection/dataset/article_regions/label_list.txt')
     parser.add_argument(
         '--voc_out_name',
         type=str,
-        default='voc.json',
+        default='valid.json',
         help='In Voc format dataset, path to output json file')
     parser.add_argument(
         '--widerface_root_dir',
